@@ -54,11 +54,14 @@ int main()
 
 	while (true)
 	{
+		//get the current active window
 		HWND currentActiveWindow = GetForegroundWindow();
 		if (savedProcessId == 0) {
+			//get window title text
 			GetWindowTextA(currentActiveWindow, currentWindow_str_array, sizeof(currentWindow_str_array));
 			currentProcessName = std::string(currentWindow_str_array);
 			if (currentProcessName == "Roblox") {
+				//get memory size to not confuse it with website roblox, assuming it doesnt use much memory ig
 				GetWindowThreadProcessId(currentActiveWindow, &currentProcessId);
 				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, currentProcessId);
 				if (hProcess != NULL) {
@@ -74,46 +77,44 @@ int main()
 				}
 			}
 		}
+		//if roblox is active window
 		else if (savedProcessHwnd != 0 && currentActiveWindow == savedProcessHwnd) {
 			RECT rect;
 			GetWindowRect(currentActiveWindow, &rect);
 			POINT cursorPos;
 			GetCursorPos(&cursorPos);
 			
+			//border stuff
 			int leftBorder = rect.left + leftOffset;
 			int rightBorder = rect.right - rightOffset;
 			int topBorder = rect.top + topOffset;
 			int bottomBorder = rect.bottom - bottomOffset;
 			RECT windowRect = { leftBorder, topBorder, rightBorder, bottomBorder };
-			/*
-			if (cursorPos.x <leftBorder || cursorPos.x > rightBorder) {
-				int newX = cursorPos.x < leftBorder ? leftBorder : rightBorder;
-				SetCursorPos(newX, cursorPos.y);
-			}
 
-			if (cursorPos.y < topBorder || cursorPos.y > bottomBorder) {
-				int newY = cursorPos.y < topBorder ? topBorder : bottomBorder;
-				SetCursorPos(cursorPos.x, newY);
-			}
-			*/
 			if (GetAsyncKeyState(VK_INSERT)) {
 				if (!isKeyToggleDown) {
 					isKeyToggleDown = true;
 					if (cursorClipEnabled) {
 						cursorClipEnabled = false;
-						ClipCursor(NULL);
-						std::cout << "Cursor clipping disabled." << std::endl;
+						std::cout << "cursor clipping: false" << std::endl;
 					}
 					else {
 						cursorClipEnabled = true;
-						ClipCursor(&windowRect);
-						std::cout << "Cursor clipping enabled." << std::endl;
+						std::cout << "cursor clipping: true" << std::endl;
 					}
 				}			
 			}
 			else {
 				isKeyToggleDown = false;
 			}
+
+			if (cursorClipEnabled) {
+				ClipCursor(&windowRect);
+			}
+			else {
+				ClipCursor(NULL);
+			}
+
 			if (GetAsyncKeyState(VK_RBUTTON)) {
 				hasSetPosAfterMouseDown = false;
 				if (!isMouseDown) {
