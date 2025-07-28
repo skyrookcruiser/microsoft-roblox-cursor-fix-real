@@ -6,7 +6,7 @@
 #include <string>
 #include <Psapi.h>
 
-
+/*
 BOOL CALLBACK enum_child_windows(HWND hwnd, LPARAM lParam) {
 	char windowText[256];
 	GetWindowTextA(hwnd, windowText, sizeof(windowText));
@@ -18,6 +18,7 @@ BOOL CALLBACK enum_child_windows(HWND hwnd, LPARAM lParam) {
 	//std::cout << windowText << hwnd << std::endl;
 	return true;
 }
+*/
 
 BOOL point_is_equal(POINT p1, POINT p2) {
 	return (p1.x == p2.x && p1.y == p2.y);
